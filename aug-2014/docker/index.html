@@ -122,27 +122,8 @@ window.onload = function() {
   We can upgrade!
 </div>
 <div>...but everything on the servers use PHP!</div>
-<div class="center"><img src="docker-logo.png" class="no-bg"></div>
 <div>
-  docker provides env separation
-</div>
-<div>
-  docker is not a VM
-</div>
-<div class="center">
-  <p>docker is an app container</p>
-</div>
-<div>
-  containers...
-  <ul>
-    <li>like a fancy <em>chroot</em></li>
-    <li>isolated on the network</li>
-    <li>can have entirely different stuff!</li>
-    <li>require linux (with <em>lxc</em>)</li>
-  </ul>
-</div>
-<div>
-  but <em>vagrant</em>?
+  <em>vagrant</em>?
 </div>
 <div>
   at best you need a whole VM
@@ -152,8 +133,72 @@ window.onload = function() {
 </div>
 <div>nope.</div>
 <div>
-  docker helps better partition servers
+  we can launch with <em>VMWare</em>
 </div>
+<div>
+  but it's hefty
+</div>
+<div class="center"><img src="docker-logo.png" class="no-bg"></div>
+<div>
+  docker provides env separation
+</div>
+<div>
+  docker is not a VM
+</div>
+<div class="center">
+  docker is an app container
+</div>
+<div class="center">
+  build image <br>&#x2193;<br> run container
+</div>
+<div>
+  docker containers...
+  <ul>
+    <li>like a fancy <em>chroot</em></li>
+    <li>isolated on the network</li>
+    <li>have versioning</li>
+    <li>are versioned sans git</li>
+    <li>require linux with <em>lxc</em></li>
+  </ul>
+</div>
+<div>
+  hundreds of containers per host
+</div>
+<div>
+  versus one VM per app
+</div>
+<div>
+  there are flaws
+  <ul>
+    <li>osx is clunky</li>
+    <li>containers across hosts?</li>
+    <li>syncing config changes</li>
+    <li>needs reverse proxy <br>(not really a flaw, but)</li>
+  </ul>
+</div>
+<div>
+  we shouldn't change our entire infrastructure
+</div>
+<div class="center">
+  special needs<br>and<br> new projects...
+</div>
+<div>
+  links
+  <ul style="line-height:1.5">
+    <li>
+      <a target="_blank" href="https://www.docker.com/whatisdocker/">What is Docker?</a>
+    </li>
+    <li> 
+      <a target="_blank" href="https://coreos.com/">Core OS</a>
+    </li>
+    <li>
+      <a target="_blank" href="http://coreos.com/docs/distributed-configuration/getting-started-with-etcd/">etcd</a>
+    </li>
+    <li>
+      <a target="_blank" href="http://www.fig.sh/">fig</a>
+    </li>
+  </ul>
+</div> 
 <div>
   <p>dockerfile</p>
   <code style="font-size:40px;letter-spacing:0px;line-height:5%">
