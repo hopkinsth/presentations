@@ -1,7 +1,9 @@
-<!DOCTYPE html><html><head><title></title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" /><style type='text/css'>
+<!DOCTYPE html><html><head><title></title><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro|Source+Code+Pro' rel='stylesheet' type='text/css'>
+<style type='text/css'>
 body {
-  font-family: 'Helvetica';
-  letter-spacing:-5px;
+  font-family: 'Source Sans Pro', sans-serif;
+  letter-spacing:-1px;
   background:#000;
   background-size:100%;
   color:#fff;
@@ -43,6 +45,10 @@ div.center {
   text-align:center;
 }
 
+code, pre {
+  font-family: "Source Code Pro", monospace;
+}
+
 div.imageText {
   text-shadow:0px 0px 5px rgba(0,0,0,0.2);
 }
@@ -78,7 +84,7 @@ window.onload = function() {
         if (window.location.hash !== n) window.location.hash = n;
         document.title = e.textContent || e.innerText;
     }
-    document.onclick = function() { go(++cur % (s.length)); };
+    //document.onclick = function() { go(++cur % (s.length)); };
     function fwd() { go(Math.min(s.length - 1, ++cur)); }
     function rev() { go(Math.max(0, --cur)); }
     document.onkeydown = function(e) {
@@ -109,6 +115,8 @@ window.onload = function() {
 <div class="center">ES6 so far</div>
 <div>
   <ul style="list-style:none;">
+    <li>1995: LiveScript @ Netscape</li>
+    <li>1996: Embrace, Extend, ECMA</li>
     <li>1999: ECMA Script 3</li>
     <li><span style="color:yellow;">2003, 2005, 2007-ish: ES4/ES3.1</span></li>
     <li>2008: ES Harmony [4+3.1]</li>
@@ -117,7 +125,6 @@ window.onload = function() {
     <li>20XX+YY: ES7</li>
   </ul>
 </div>
-<div>ES6 coming real soon now<br><br> drafts exist!</div>
 <div>
   meanwhile...
   <ul>
@@ -129,6 +136,7 @@ window.onload = function() {
   v8 implements parts of the draft spec
   <ul>
     <li>generators</li>
+    <li>iterators</li>
     <li>collections (sets, maps weak and not)</li>
     <li>proxies</li>
     <li>modules</li>
@@ -139,6 +147,132 @@ window.onload = function() {
   </ul>
 </div>
 <div>  
+  there's a lot of cool stuff in that list
+</div>
+<div style="font-size: 240px !important;">
+  but focus on generators and iterators
+</div>
+<div>
+  first, the other stuff
+</div>
+<div>
+  symbols
+</div>
+<div style="font-size:100px !important;">
+  <code>
+    var obj = {};<br>
+    obj.secret = 'password123';
+  </code>
+</div>
+<div>
+  symbols help with information hiding<br>
+  <code class="language-js"><pre>
+    (function () {
+      'use strict';
+      var s = Symbol('secret');
+      var obj = {};
+      obj[s] = 'password123';
+
+      this.obj = obj;
+    }.call(this));</pre></code>
+</div>
+<div>
+  proxies
+</div>
+<div> 
+  <code>Object.defineProperty</code> is limited
+</div>
+<div>
+  What does this do?
+  <code><pre>
+    var my = {};
+    Object.defineProperty(my, 'name', {
+      get: function () {
+        return this.name + ' Jones'
+      }
+    });
+
+    my.name = 'Bob';
+    console.log(my.name);
+  </pre></code>
+</div>
+<div>
+  <p style="color: red">
+    RangeError: Maximum call stack size exceeded
+  </p>
+  <code><pre>
+    var my = {};
+    Object.defineProperty(my, 'name', {
+      get: function () {
+        return this.name + ' Jones'
+      }
+    });
+
+    my.name = 'Bob';
+    console.log(my.name);
+  </pre></code>
+</div>
+<div>
+  But this works
+  <code><pre>
+    var my = {};
+    Object.defineProperty(my, 'fullName', {
+      get: function () {
+        return [
+          this.firstName,
+          this.lastName
+        ].join(' ');
+      }
+    });
+
+    my.firstName = 'Bob';
+    my.lastName = 'Jones';
+    console.log(my.fullName);
+  </pre></code>
+</div>
+<div>
+  Object.defineProperty is good for pseudo-properties
+</div>
+<div>
+  and you can get around some of its limitations
+</div>
+<div>
+  but proxies help you do more
+</div>
+<div>
+  <code><pre>
+   (function () {
+      'use strict';
+      var o = {};
+      o.name = 'Bob';
+      var p = Proxy.create({
+        get: function (rec, prop) {
+          return o[prop];
+        },
+        delete: function (prop) {
+          //nop for now; can't delete any properties
+          return true;
+        }
+      });
+
+      delete p.name;
+      console.log(p.name);
+   }());
+  </pre></code>
+</div>
+<div class="center">
+  Maps, Sets <br><i>&</i> such
+</div>
+<div>
+  Objects in JavaScript can only have string keys
+</div>
+<div>
+  <code><pre>
+    //put example here!
+    var d = {
+
+    }
+  </pre></code>
 </div>
 </body>
 </html>
