@@ -127,7 +127,7 @@ window.onload = function() {
 </div>
 <div>
   meanwhile...
-  <ul>
+  <ul style="list-style:none;">
     <li>2008: v8 [w/Chrome]</li>
     <li>2009: node.js</li>
   </ul>
@@ -150,10 +150,58 @@ window.onload = function() {
   there's a lot of cool stuff in that list
 </div>
 <div style="font-size: 240px !important;">
-  but focus on generators and iterators
+  generators and iterators are the best ones available now*
 </div>
 <div>
   first, the other stuff
+</div>
+<div>
+  Running examples? use this:<br><br>
+  <code>bash -c "$(curl -fsSL https://raw.githubusercontent.com/hopkinsth/presentations/master/aug-2014/es6/setup.sh)"</code>
+</div>
+<div class="center">
+  block scope!
+</div>
+<div>
+  variables in JS are hoisted<br>
+  and are linked to function scope
+  <code><pre>
+  var name = 'Thomas';
+  var i;
+  
+  for (i = 0; i &lt; 10; i += 1) {
+    var i = 99;
+    var name = 'Bob';
+    var age = i;
+  }
+
+  console.log(name === 'Bob');
+  console.log(typeof age !== 'undefined');
+  console.log(i === 100);
+  </pre></code>
+</div>
+<div>
+  use the `let` keyword for block scope!<br>
+  and use it all the time, yeah?
+  <code><pre>
+  let name = 'Thomas';
+  let i;
+
+  for (i = 0; i < 10; i += 1) { 
+    let i = 99;
+    let name = 'Bob';
+    let age = i;
+  }
+
+  console.log(name === 'Thomas');
+  console.log(typeof age === 'undefined');
+  console.log(i === 10);
+  </pre></code>
+</div>
+<div class="center">
+  `let` only works in strict mode<br>
+  <br>
+  ...for now
 </div>
 <div>
   symbols
@@ -269,10 +317,116 @@ window.onload = function() {
 <div>
   <code><pre>
     //put example here!
-    var d = {
+    var obj = {}
+    var obj2 = {my: 'key', is: 'anObject'};
+    var obj3 = {hey: 'this', is: 'another!'};
 
-    }
+    obj[obj2] = 'secret message';
+    obj[obj3] = 'secret message 2';
+
+    console.log(obj[obj2] === 'secret message 2');
   </pre></code>
+</div>
+<div>
+  maps allow any data type as keys
+</div>
+<div>
+  <code><pre>
+    (function () {
+      'use strict';
+      let obj2 = {my: 'key', is: 'anObject'};
+      let obj3 = {hey: 'this', is: 'another!'};
+      let m = new Map();
+      m.set(obj2, 'secret message');
+      m.set(obj3, 'secret message 2');
+    }())
+  </pre></code>
+</div>
+<div>
+  sets are similar to arrays<br><br>
+  but they only allow uniques
+</div>
+<div>
+  <code><pre>
+  (function () {
+    'use strict';
+    let s = new Set();
+    s.add('bob');
+    s.add({here: 'is', a: 'thing'});
+    s.add('bob');
+
+    console.log(s.size === 2);
+  }())
+  </pre></code>
+</div>
+<div class="center">
+  looping over maps or sets?
+  <br><br>
+  impossible for now
+</div>
+<div class="center">
+  WeakMaps
+  and<br>
+  WeakSets
+</div>
+<div class="center">
+  reference-free maps and sets<br>
+  <br>
+  that only work with object keys
+</div>
+<div>
+  <span style='color:red;font-size:0.7em'>TypeError: Invalid value used as weak map key</span>
+  <code>
+  <pre>
+  let m = new WeakMap();
+  m.set('name', 'Bob');
+  </pre></code>
+</div>
+<div>
+  <code><pre>
+  let projects = new WeakMap();
+  let person = {
+    name: 'Thomas',
+    eMail: 'thopkins@site.com'
+  };
+
+  //ok:
+  projects.set(person, 'Tagular');
+</div>
+<div class="center">
+  when the key in a weak map disappears<br><br>
+  so do the values
+</div>
+<div>
+  <code style="width:400px;"><pre style="word-wrap: break-word">
+  let projects = new WeakMap();
+  let person = {
+    name: 'Thomas',
+    eMail: 'thopkins@site.com'
+  };
+
+  projects.set(person, 'Tagular');
+  person = null;
+
+  //???
+  projects.get(person); 
+  </pre></code>
+</div>
+<div class="center">
+  it's impossible to know everything <br><br>
+  in a WeakMap or WeakSet <br><br>
+  but they're useful
+</div>
+<div>
+  modules?
+</div>
+<div>
+  can't actually use them with node
+</div>
+<div class="center">
+generators<br>
+and<br>
+iterators
 </div>
 </body>
 </html>
