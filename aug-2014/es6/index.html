@@ -52,6 +52,11 @@ code, pre {
 div.imageText {
   text-shadow:0px 0px 5px rgba(0,0,0,0.2);
 }
+
+ul {
+  list-style: none;
+}
+
 </style><script type='text/javascript'>
 window.onload = function() {
     var s = document.getElementsByTagName('div'), cur = 0, ti;
@@ -392,6 +397,7 @@ window.onload = function() {
 
   //ok:
   projects.set(person, 'Tagular');
+  </pre></code>
 </div>
 <div class="center">
   when the key in a weak map disappears<br><br>
@@ -427,6 +433,123 @@ window.onload = function() {
 generators<br>
 and<br>
 iterators
+</div>
+<div>
+  new flow control patterns!
+</div>
+<div>
+  imagine a world where you don't need callbacks for everything!
+</div>
+<div>
+  but first, basic generators
+</div>
+<div>
+  <p>a generator function</p>
+  <code><pre>
+  function *range(max) {
+
+  }
+  </pre></code>
+</div>
+<div>
+  <code><pre>
+  function *range(max) {
+    'use strict';
+    let i = 0;
+
+    for (i = 0; i <= max; i += 1) {
+      yield i;
+    }
+  }
+  </pre></code>
+</div>
+<div class="center" style="text-align:center;width:100%">
+  <p style="font-size:160px;margin: 10px auto;height: 160px">range output...</p>
+  <img src="basic-generator-output.png" style="width: 550px;">
+</div>
+<div>
+  so far, this is useful for...
+  <ul>
+    <li>working with huge objects</li>
+    <li>looping over streamed data</li>
+    <li>avoiding callbacks</li>
+  </ul>
+</div>
+<div>
+  avoiding callbacks...
+  <code><pre>
+    function *printFile(filename) {
+      let data = yield readFile(filename);
+      let info = yield statFile(filename);
+      console.log(data)
+    }
+
+    function *readFile(filename) {
+      //do some stuff
+    }
+  </pre></code>
+</div>
+<div>
+  generators can give you async code without callbacks
+</div>
+<div>
+  need some glue to get there
+  <ul>
+    <li>co</li>
+    <li>task.js</li>
+    <li>suspend</li>
+  </ul>
+</div>
+<div>
+  we'll use `co` here <br><br>
+  because it's what I've used the most <br><br>
+  and it supports promises and all sorts of cool stuff
+</div>
+<div>
+  abstract sample
+  <code><pre>
+  co(function *() {
+    let url = 'http://www.google.com/stuff';
+    let username = yield exec('whoami');
+    let data = yield get(url);
+
+    console.log('%s requested data from %s', username, url);
+    console.log('the data received is:', data);
+  })();
+  </pre></code>
+</div>
+<div>
+  more realistic example
+  <code><pre>
+    'use strict';
+    let thunkify = require('thunkify');
+    let co = require('co');
+    let redis = require('redis');
+    let conn = redis.createClient();
+
+    conn.set = thunkify(conn.set);
+    conn.get = thunkify(conn.get);
+
+    co(function *() {
+      let threshhold = (yield conn.get('curThreshhold')) || 10;
+      let data = yield getData(threshhold);
+
+      yield conn.set('someDataKey', JSON.stringify(data));
+
+      console.log('data value is...', yield conn.get('someDataKey'));
+      console.log('done!');
+    })();
+
+    function getData(limit) {
+      return function(done) {
+        let result = [];
+        for (let i = 0; i < limit; i += 1) {
+          result.push(i + 1);
+        }
+        done(null, result);
+      };
+    }
+  </pre></code>
 </div>
 </body>
 </html>
