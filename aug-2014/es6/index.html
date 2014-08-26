@@ -61,11 +61,13 @@ ul {
 window.onload = function() {
     var s = document.getElementsByTagName('div'), cur = 0, ti;
     if (!s) return;
+    for (var k = 0; k < s.length; k++) s[k].style.display = 'none';
     function go(n) {
+        s[cur].style.display = 'none';
         cur = n;
         var i = 1e3, e = s[n], t;
         document.body.className = e.dataset.bodyclass || '';
-        for (var k = 0; k < s.length; k++) s[k].style.display = 'none';
+        //for (var k = 0; k < s.length; k++) s[k].style.display = 'none';
         e.style.display = 'inline';
         e.style.fontSize = i + 'px';
         if (e.firstChild && e.firstChild.nodeName === 'IMG' && !e.firstChild.classList.contains('no-bg')) {
@@ -90,8 +92,8 @@ window.onload = function() {
         document.title = e.textContent || e.innerText;
     }
     //document.onclick = function() { go(++cur % (s.length)); };
-    function fwd() { go(Math.min(s.length - 1, ++cur)); }
-    function rev() { go(Math.max(0, --cur)); }
+    function fwd() { go(Math.min(s.length - 1, cur + 1)); }
+    function rev() { go(Math.max(0, cur - 1)); }
     document.onkeydown = function(e) {
         if (e.which === 39 || e.which === 34 || e.which === 40) fwd();
         if (e.which === 37 || e.which === 33 || e.which === 38) rev();
