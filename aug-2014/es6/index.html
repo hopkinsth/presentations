@@ -506,7 +506,29 @@ iterators
   and it supports promises and all sorts of cool stuff
 </div>
 <div>
-  abstract sample
+  before...
+  <code><pre>
+  var fs = require('fs');
+  fs.readFile('package.json', function (err, buf) {
+    if (err) {
+      return console.error('fail', e.stack);
+    }
+
+    //do something with buf here
+  });
+  </pre></code>
+</div>
+<div>
+  after...
+  <code><pre>
+    co(function *() {
+      let data = yield read('package.json');
+      console.log('the data:', data);
+    })();
+  </pre></code>
+</div>
+<div>
+  multiple actions
   <code><pre>
   co(function *() {
     let url = 'http://www.google.com/stuff';
@@ -550,6 +572,26 @@ iterators
       };
     }
   </pre></code>
+</div>
+<div>
+  what about errors?
+</div>
+<div>
+  remember try/catch?
+</div>
+<div>
+  'use strict';
+  let thunkify = require('thunkify');
+  let fs = require('fs');
+  let co = require('co');
+  fs.readFile = thunkify(fs.readFile);
+  co(function *() {
+    try {
+      let data = yield fs.readFile('/etc/fstab');
+    } catch (e) {
+      console.error('Got error', e);
+    }
+  })();
 </div>
 </body>
 </html>
