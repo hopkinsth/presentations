@@ -31,6 +31,10 @@ img {
   width:100%;
 }
 
+body > div {
+  /*width: 100%;*/
+}
+
 div {
   cursor:pointer;
   cursor:hand;
@@ -68,7 +72,7 @@ window.onload = function() {
         var i = 1e3, e = s[n], t;
         document.body.className = e.dataset.bodyclass || '';
         //for (var k = 0; k < s.length; k++) s[k].style.display = 'none';
-        e.style.display = 'inline';
+        e.style.display = 'block';
         e.style.fontSize = i + 'px';
         if (e.firstChild && e.firstChild.nodeName === 'IMG' && !e.firstChild.classList.contains('no-bg')) {
             document.body.style.backgroundImage = 'url(' + e.firstChild.src + ')';
@@ -111,10 +115,12 @@ window.onload = function() {
             s.length - 1,
             parseInt(window.location.hash.substring(1), 10)), 0);
     }
-    if (window.location.hash) cur = parse_hash() || cur;
+    if (window.location.hash) { 
+      cur = parse_hash() || cur;
+    }
     window.onhashchange = function() {
         var c = parse_hash();
-        if (c !== cur) go(c);
+        //if (c !== cur) go(c);
     };
     go(cur);
 };
@@ -213,26 +219,36 @@ window.onload = function() {
 <div>
   symbols
 </div>
-<div style="font-size:100px !important;">
-  <code>
-    var obj = {};<br>
-    obj.secret = 'password123';
-  </code>
+<div>
+  symbols help with name collisions<br>
+  and storing metadata in an object<br>
+  <code class="language-js"><pre>
+  'use strict';
+  let one = Symbol('name');
+  let two = Symbol('name');
+  let obj = {};
+  let swappy = Symbol();
+  
+  obj[one] = 'Bob';
+  obj[two] = 'Joe';
+  obj[swappy] = 1;
+
+  console.log(obj[one]);
+  console.log(obj[two]);
+  </pre></code>
 </div>
 <div>
-  symbols help with information hiding<br>
-  <code class="language-js"><pre>
-    (function () {
-      'use strict';
-      var s = Symbol('secret');
-      var obj = {};
-      obj[s] = 'password123';
+  private symbols might appear<br><br>
 
-      this.obj = obj;
-    }.call(this));</pre></code>
+  v8 uses symbols internally <br>(e.g. @@create)<br><br>
+
+  and, someday, global symbol registry  
 </div>
 <div>
   proxies
+</div>
+<div>
+  builds on <code>Object.defineProperty</code>
 </div>
 <div> 
   <code>Object.defineProperty</code> is limited
@@ -240,15 +256,15 @@ window.onload = function() {
 <div>
   What does this do?
   <code><pre>
-    var my = {};
-    Object.defineProperty(my, 'name', {
-      get: function () {
-        return this.name + ' Jones'
-      }
-    });
+  var my = {};
+  Object.defineProperty(my, 'name', {
+    get: function () {
+      return this.name + ' Jones'
+    }
+  });
 
-    my.name = 'Bob';
-    console.log(my.name);
+  my.name = 'Bob';
+  console.log(my.name);
   </pre></code>
 </div>
 <div>
@@ -256,15 +272,15 @@ window.onload = function() {
     RangeError: Maximum call stack size exceeded
   </p>
   <code><pre>
-    var my = {};
-    Object.defineProperty(my, 'name', {
-      get: function () {
-        return this.name + ' Jones'
-      }
-    });
+  var my = {};
+  Object.defineProperty(my, 'name', {
+    get: function () {
+      return this.name + ' Jones'
+    }
+  });
 
-    my.name = 'Bob';
-    console.log(my.name);
+  my.name = 'Bob';
+  console.log(my.name);
   </pre></code>
 </div>
 <div>
@@ -286,7 +302,7 @@ window.onload = function() {
   </pre></code>
 </div>
 <div>
-  Object.defineProperty is good for pseudo-properties
+  Object.defineProperty is good for virtual properties, etc
 </div>
 <div>
   and you can get around some of its limitations
@@ -296,24 +312,33 @@ window.onload = function() {
 </div>
 <div>
   <code><pre>
-   (function () {
-      'use strict';
-      var o = {};
-      o.name = 'Bob';
-      var p = Proxy.create({
-        get: function (rec, prop) {
-          return o[prop];
-        },
-        delete: function (prop) {
-          //nop for now; can't delete any properties
-          return true;
-        }
-      });
+  'use strict';
+  var o = {};
+  o.name = 'Bob';
+  var p = Proxy.create({
+    get: function (rec, prop) {
+      return o[prop];
+    },
+    delete: function (prop) {
+      //nop for now; can't delete any properties
+      return true;
+    },
+    defineProperty: function (name, desc) {
+      //only allow email property
+      if ('email' === name) {
+        Object.defineProperty(o, name, desc);
+      }
+    }
+  });
 
-      delete p.name;
-      console.log(p.name);
-   }());
+  delete p.name;
+  console.log(p.name);
   </pre></code>
+</div>
+<div>
+  you can also create proxy functions<br><br>
+
+  which seems less useful, but hey
 </div>
 <div class="center">
   Maps, Sets <br><i>&</i> such
@@ -323,15 +348,14 @@ window.onload = function() {
 </div>
 <div>
   <code><pre>
-    //put example here!
-    var obj = {}
-    var obj2 = {my: 'key', is: 'anObject'};
-    var obj3 = {hey: 'this', is: 'another!'};
+  var obj = {}
+  var obj2 = {my: 'key', is: 'anObject'};
+  var obj3 = {hey: 'this', is: 'another!'};
 
-    obj[obj2] = 'secret message';
-    obj[obj3] = 'secret message 2';
+  obj[obj2] = 'secret message';
+  obj[obj3] = 'secret message 2';
 
-    console.log(obj[obj2] === 'secret message 2');
+  console.log(obj[obj2] === 'secret message 2');
   </pre></code>
 </div>
 <div>
@@ -339,14 +363,12 @@ window.onload = function() {
 </div>
 <div>
   <code><pre>
-    (function () {
-      'use strict';
-      let obj2 = {my: 'key', is: 'anObject'};
-      let obj3 = {hey: 'this', is: 'another!'};
-      let m = new Map();
-      m.set(obj2, 'secret message');
-      m.set(obj3, 'secret message 2');
-    }())
+    'use strict';
+    let obj2 = {my: 'key', is: 'anObject'};
+    let obj3 = {hey: 'this', is: 'another!'};
+    let m = new Map();
+    m.set(obj2, 'secret message');
+    m.set(obj3, 'secret message 2');
   </pre></code>
 </div>
 <div>
@@ -355,15 +377,13 @@ window.onload = function() {
 </div>
 <div>
   <code><pre>
-  (function () {
-    'use strict';
-    let s = new Set();
-    s.add('bob');
-    s.add({here: 'is', a: 'thing'});
-    s.add('bob');
+  'use strict';
+  let s = new Set();
+  s.add('bob');
+  s.add({here: 'is', a: 'thing'});
+  s.add('bob');
 
-    console.log(s.size === 2);
-  }())
+  console.log(s.size === 2);
   </pre></code>
 </div>
 <div class="center">
@@ -437,10 +457,8 @@ and<br>
 iterators
 </div>
 <div>
-  new flow control patterns!
-</div>
-<div>
-  imagine a world where you don't need callbacks for everything!
+  new flow control patterns!<br><br>
+  i.e. not callbacks everywhere
 </div>
 <div>
   but first, basic generators
@@ -480,15 +498,15 @@ iterators
 <div>
   avoiding callbacks...
   <code><pre>
-    function *printFile(filename) {
-      let data = yield readFile(filename);
-      let info = yield statFile(filename);
-      console.log(data)
-    }
+  function *printFile(filename) {
+    let data = yield readFile(filename);
+    let info = yield statFile(filename);
+    console.log(data)
+  }
 
-    function *readFile(filename) {
-      //do some stuff
-    }
+  function *readFile(filename) {
+    //do some stuff
+  }
   </pre></code>
 </div>
 <div>
@@ -545,34 +563,34 @@ iterators
 <div>
   more realistic example
   <code><pre>
-    'use strict';
-    let thunkify = require('thunkify');
-    let co = require('co');
-    let redis = require('redis');
-    let conn = redis.createClient();
+  'use strict';
+  let thunkify = require('thunkify');
+  let co = require('co');
+  let redis = require('redis');
+  let conn = redis.createClient();
 
-    conn.set = thunkify(conn.set);
-    conn.get = thunkify(conn.get);
+  conn.set = thunkify(conn.set);
+  conn.get = thunkify(conn.get);
 
-    co(function *() {
-      let threshhold = (yield conn.get('curThreshhold')) || 10;
-      let data = yield getData(threshhold);
+  co(function *() {
+    let threshhold = (yield conn.get('curThreshhold')) || 10;
+    let data = yield getData(threshhold);
 
-      yield conn.set('someDataKey', JSON.stringify(data));
+    yield conn.set('someDataKey', JSON.stringify(data));
 
-      console.log('data value is...', yield conn.get('someDataKey'));
-      console.log('done!');
-    })();
+    console.log('data value is...', yield conn.get('someDataKey'));
+    console.log('done!');
+  })();
 
-    function getData(limit) {
-      return function(done) {
-        let result = [];
-        for (let i = 0; i < limit; i += 1) {
-          result.push(i + 1);
-        }
-        done(null, result);
-      };
-    }
+  function getData(limit) {
+    return function(done) {
+      let result = [];
+      for (let i = 0; i < limit; i += 1) {
+        result.push(i + 1);
+      }
+      done(null, result);
+    };
+  }
   </pre></code>
 </div>
 <div>
