@@ -88,14 +88,14 @@ tar=${TAR-tar}
 
 es6 () {
   echo "alias node='node --harmony'" > ~/.es6-pres
-  if [ -d "$HOME" ] && [ ! -d "$HOME" ]
+  if [ -d "$HOME" ] && [ ! -d "$HOME/thopkins-es6-demos" ]; then
     mkdir "$HOME/thopkins-es6-demos"
   fi
 
   cd "$HOME/thopkins-es6-demos"
 
-  baseUrl = "https://raw.githubusercontent.com/hopkinsth/presentations/master/aug-2014/es6/samples/"
-  files = (
+  baseUrl="https://raw.githubusercontent.com/hopkinsth/presentations/master/aug-2014/es6/samples/"
+  files=(
     "block-scope-1.js"
     "block-scope-2.js"
     "generators-1.js"
@@ -119,12 +119,14 @@ es6 () {
     "weak-maps-sets-3.js"
   )
 
-  for name in files 
+  for name in "${files[@]}"
   do 
-    curl -O "$baseUrl$name"
+    curl -O "$baseUrl$name" 2>&1 > /dev/null
   done
 
   main "use" "0.11"
+
+  cd "$HOME/thopkins-es6-demos"
 }
 
 main () {
