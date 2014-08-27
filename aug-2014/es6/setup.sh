@@ -70,7 +70,7 @@ esac
 
 # Use fancy pants globs
 shopt -s extglob
-
+  
 # Try to figure out the os and arch for binary fetching
 uname="$(uname -a)"
 os=
@@ -88,6 +88,42 @@ tar=${TAR-tar}
 
 es6 () {
   echo "alias node='node --harmony'" > ~/.es6-pres
+  if [ -d "$HOME" ] && [ ! -d "$HOME" ]
+    mkdir "$HOME/thopkins-es6-demos"
+  fi
+
+  cd "$HOME/thopkins-es6-demos"
+
+  baseUrl = "https://raw.githubusercontent.com/hopkinsth/presentations/master/aug-2014/es6/samples/"
+  files = (
+    "block-scope-1.js"
+    "block-scope-2.js"
+    "generators-1.js"
+    "generators-2.js"
+    "generators-3.js"
+    "generators-4.js"
+    "generators-5.js"
+    "generators-6.js"
+    "generators-7.js"
+    "generators-8.js"
+    "maps-sets-1.js"
+    "maps-sets-2.js"
+    "maps-sets-3.js"
+    "package.json"
+    "proxies-1.js"
+    "proxies-2.js"
+    "proxies-3.js"
+    "symbols-1.js"
+    "weak-maps-sets-1.js"
+    "weak-maps-sets-2.js"
+    "weak-maps-sets-3.js"
+  )
+
+  for name in files 
+  do 
+    curl -O "$baseUrl$name"
+  done
+
   main "use" "0.11"
 }
 
