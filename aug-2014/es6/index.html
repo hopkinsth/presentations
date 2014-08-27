@@ -169,8 +169,24 @@ window.onload = function() {
   first, the other stuff
 </div>
 <div>
-  Running examples? use this:<br><br>
-  <code>bash -c "$(curl -fsSL https://raw.githubusercontent.com/hopkinsth/presentations/master/aug-2014/es6/setup.sh)"</code>
+  running stuff with node
+</div>
+<div>
+  need to have node v0.11.x<br><br>
+  where <code>x >= 9</code>
+</div>
+<div>
+  ES6 features are hidden behind a flag:<br>
+  <code>--harmony</code><br><br>
+  to see all flags:<br>
+  <code style="font-size:75px">node --v8-options | grep harmony</code>
+</div>
+<div>
+  just use this for now.<br><br>
+
+  it's safe, I promise<br><br>
+
+  <code>bash -c "$(curl -fsSL http://goo.gl/QsGq63)"</code>
 </div>
 <div class="center">
   block scope!
@@ -178,6 +194,7 @@ window.onload = function() {
 <div>
   variables in JS are hoisted<br>
   and are linked to function scope
+
   <code><pre>
   var name = 'Thomas';
   var i;
@@ -190,13 +207,13 @@ window.onload = function() {
 
   console.log(name === 'Bob');
   console.log(typeof age !== 'undefined');
-  console.log(i === 100);
-  </pre></code>
+  console.log(i === 100);</pre></code><p class="sample-file" style="font-size:24px">block-scope-1.js</p>
 </div>
 <div>
   use the `let` keyword for block scope!<br>
   and use it all the time, yeah?
   <code><pre>
+  'use strict';
   let name = 'Thomas';
   let i;
 
@@ -208,8 +225,7 @@ window.onload = function() {
 
   console.log(name === 'Thomas');
   console.log(typeof age === 'undefined');
-  console.log(i === 10);
-  </pre></code>
+  console.log(i === 10);</pre></code><p class="sample-file" style="font-size:24px">block-scope-2.js</p>
 </div>
 <div class="center">
   `let` only works in strict mode<br>
@@ -234,8 +250,7 @@ window.onload = function() {
   obj[swappy] = 1;
 
   console.log(obj[one]);
-  console.log(obj[two]);
-  </pre></code>
+  console.log(obj[two]);</pre></code><p class="sample-file" style="font-size:24px">symbols-1.js</p>
 </div>
 <div>
   private symbols might appear<br><br>
@@ -250,65 +265,44 @@ window.onload = function() {
 <div>
   builds on <code>Object.defineProperty</code>
 </div>
+<div>
+  works great for computed properties
+  <code><pre>
+  var my = {};
+  Object.defineProperty(my, 'fullName', {
+    get: function () {
+      return [
+        this.firstName,
+        this.lastName
+      ].join(' ');
+    }
+  });
+
+  my.firstName = 'Bob';
+  my.lastName = 'Jones';
+  console.log(my.fullName);</pre></code><p class="sample-file" style="font-size:24px">proxies-1.js</p>
+</div>
 <div> 
   <code>Object.defineProperty</code> is limited
 </div>
 <div>
-  What does this do?
   <code><pre>
-  var my = {};
-  Object.defineProperty(my, 'name', {
+  var someJones = {};
+  Object.defineProperty(someJones, 'name', {
     get: function () {
       return this.name + ' Jones'
-    }
+    },
+    //blocks changing the descriptor
+    //and deleting
+    configurable: false
   });
 
   my.name = 'Bob';
   console.log(my.name);
-  </pre></code>
+  delete my.name;</pre></code><p class="sample-file" style="font-size:24px">proxies-2.js</p>
 </div>
 <div>
-  <p style="color: red">
-    RangeError: Maximum call stack size exceeded
-  </p>
-  <code><pre>
-  var my = {};
-  Object.defineProperty(my, 'name', {
-    get: function () {
-      return this.name + ' Jones'
-    }
-  });
-
-  my.name = 'Bob';
-  console.log(my.name);
-  </pre></code>
-</div>
-<div>
-  But this works
-  <code><pre>
-    var my = {};
-    Object.defineProperty(my, 'fullName', {
-      get: function () {
-        return [
-          this.firstName,
-          this.lastName
-        ].join(' ');
-      }
-    });
-
-    my.firstName = 'Bob';
-    my.lastName = 'Jones';
-    console.log(my.fullName);
-  </pre></code>
-</div>
-<div>
-  Object.defineProperty is good for virtual properties, etc
-</div>
-<div>
-  and you can get around some of its limitations
-</div>
-<div>
-  but proxies help you do more
+  proxies help you do more
 </div>
 <div>
   <code><pre>
@@ -332,8 +326,7 @@ window.onload = function() {
   });
 
   delete p.name;
-  console.log(p.name);
-  </pre></code>
+  console.log(p.name);</pre></code><p class="sample-file" style="font-size:24px">proxies-3.js</p>
 </div>
 <div>
   you can also create proxy functions<br><br>
@@ -355,21 +348,23 @@ window.onload = function() {
   obj[obj2] = 'secret message';
   obj[obj3] = 'secret message 2';
 
-  console.log(obj[obj2] === 'secret message 2');
-  </pre></code>
+  //value is overwritten; key is the same
+  console.log(obj[obj2] === 'secret message 2');</pre></code><p class="sample-file" style="font-size:24px">maps-sets-1.js</p>
 </div>
 <div>
   maps allow any data type as keys
 </div>
 <div>
   <code><pre>
-    'use strict';
-    let obj2 = {my: 'key', is: 'anObject'};
-    let obj3 = {hey: 'this', is: 'another!'};
-    let m = new Map();
-    m.set(obj2, 'secret message');
-    m.set(obj3, 'secret message 2');
-  </pre></code>
+  'use strict';
+  let obj2 = {my: 'key', is: 'anObject'};
+  let obj3 = {hey: 'this', is: 'another!'};
+  let m = new Map();
+  m.set(obj2, 'secret message');
+  m.set(obj3, 'secret message 2');
+
+  console.log(m.get(obj2));
+  console.log(m.get(obj3));</pre></code><p class="sample-file" style="font-size:24px">maps-sets-2.js</p>
 </div>
 <div>
   sets are similar to arrays<br><br>
@@ -383,13 +378,12 @@ window.onload = function() {
   s.add({here: 'is', a: 'thing'});
   s.add('bob');
 
-  console.log(s.size === 2);
-  </pre></code>
+  console.log(s.size === 2);</pre></code><p class="sample-file" style="font-size:24px">maps-sets-3.js</p>
 </div>
 <div class="center">
   looping over maps or sets?
   <br><br>
-  impossible for now
+  can't do it now, which is lame
 </div>
 <div class="center">
   WeakMaps
@@ -405,12 +399,13 @@ window.onload = function() {
   <span style='color:red;font-size:0.7em'>TypeError: Invalid value used as weak map key</span>
   <code>
   <pre>
+  'use strict';
   let m = new WeakMap();
-  m.set('name', 'Bob');
-  </pre></code>
+  m.set('name', 'Bob');</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-1.js</p>
 </div>
 <div>
   <code><pre>
+  'use strict';
   let projects = new WeakMap();
   let person = {
     name: 'Thomas',
@@ -418,8 +413,7 @@ window.onload = function() {
   };
 
   //ok:
-  projects.set(person, 'Tagular');
-  </pre></code>
+  projects.set(person, 'Tagular');</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-2.js</p>
 </div>
 <div class="center">
   when the key in a weak map disappears<br><br>
@@ -427,6 +421,7 @@ window.onload = function() {
 </div>
 <div>
   <code style="width:400px;"><pre style="word-wrap: break-word">
+  'use strict';
   let projects = new WeakMap();
   let person = {
     name: 'Thomas',
@@ -437,8 +432,7 @@ window.onload = function() {
   person = null;
 
   //???
-  projects.get(person); 
-  </pre></code>
+  projects.get(person);</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-3.js</p>
 </div>
 <div class="center">
   it's impossible to know everything <br><br>
@@ -467,9 +461,9 @@ iterators
   <p>a generator function</p>
   <code><pre>
   function *range(max) {
-
-  }
-  </pre></code>
+    'use strict';
+    let answer = yield 'some stuff';
+  }</pre></code><p class="sample-file" style="font-size:24px">generators-1.js</p>
 </div>
 <div>
   <code><pre>
@@ -481,33 +475,46 @@ iterators
       yield i;
     }
   }
-  </pre></code>
+
+  //calling range returns an object:
+  //a generator
+  console.log(range(5).next);</pre></code><p class="sample-file" style="font-size:24px">generators-2.js</p>
+</div>
+<div>
+  a generator function: <br><br><code>function *f() {}</code><br><br>
+  a generator: <br><code><pre>
+  { 
+    next: function () { [native code] },
+    throw: function () { [native code] } 
+  }</pre></code>
 </div>
 <div class="center" style="text-align:center;width:100%">
   <p style="font-size:160px;margin: 10px auto;height: 160px">range output...</p>
   <img src="basic-generator-output.png" style="width: 550px;">
 </div>
 <div>
+  generators can receive data
+  <code><pre>
+  'use strict';
+  function *id(line) {
+    while (true) {
+      line = line || '';
+      line = yield line + ('' + Math.random());
+    }
+  }
+
+  let idMachine = id();
+  idMachine.next();
+  console.log(idMachine.next('user1'));
+  console.log(idMachine.next('user2'));</pre></code><p class="sample-file" style="font-size:24px">generators-3.js</p>
+</div>
+<div>
   so far, this is useful for...
   <ul>
     <li>working with huge objects</li>
     <li>looping over streamed data</li>
-    <li>avoiding callbacks</li>
+    <li>avoiding callbacks?</li>
   </ul>
-</div>
-<div>
-  avoiding callbacks...
-  <code><pre>
-  function *printFile(filename) {
-    let data = yield readFile(filename);
-    let info = yield statFile(filename);
-    console.log(data)
-  }
-
-  function *readFile(filename) {
-    //do some stuff
-  }
-  </pre></code>
 </div>
 <div>
   generators can give you async code without callbacks
@@ -535,30 +542,38 @@ iterators
     }
 
     //do something with buf here
-  });
-  </pre></code>
+  });</pre></code><p class="sample-file" style="font-size:24px">generators-4.js</p>
 </div>
 <div>
   after...
   <code><pre>
-    co(function *() {
-      let data = yield read('package.json');
-      console.log('the data:', data);
-    })();
-  </pre></code>
+  'use strict';
+  let co = require('co');
+  let thunkify = require('thunkify');
+  let read = thunkify(require('fs').readFile);
+  co(function *() {
+    'use strict';
+    let data = yield read('package.json');
+    console.log('the data:', data);
+  })();</pre></code><p class="sample-file" style="font-size:24px">generators-5.js</p>
 </div>
 <div>
   multiple actions
   <code><pre>
+  'use strict';
+  let co = require('co');
+  let exec = require('co-exec');
+  let get = require('cogent');
   co(function *() {
     let url = 'http://www.google.com/stuff';
     let username = yield exec('whoami');
     let data = yield get(url);
 
+    username = username.trim();
     console.log('%s requested data from %s', username, url);
-    console.log('the data received is:', data);
-  })();
-  </pre></code>
+    console.log('the data received is:');
+    data.pipe(process.stdout);
+  })();</pre></code><p class="sample-file" style="font-size:24px">generators-6.js</p>
 </div>
 <div>
   more realistic example
@@ -590,8 +605,7 @@ iterators
       }
       done(null, result);
     };
-  }
-  </pre></code>
+  }</pre></code><p class="sample-file" style="font-size:24px">generators-7.js</p>
 </div>
 <div>
   what about errors?
@@ -613,7 +627,7 @@ iterators
       console.error('Got error', e);
     }
   })();
-  </pre></code>
+  </pre></code><p class="sample-file" style="font-size:24px">generators-8.js</p>
 </div>
 <div>
   links
