@@ -94,6 +94,8 @@ es6 () {
 
   cd "$HOME/thopkins-es6-demos"
 
+  local baseUrl files
+
   baseUrl="https://raw.githubusercontent.com/hopkinsth/presentations/master/aug-2014/es6/samples/"
   files=(
     "block-scope-1.js"
@@ -127,6 +129,8 @@ es6 () {
   main "use" "0.11"
 
   cd "$HOME/thopkins-es6-demos"
+
+  exit 0
 }
 
 main () {
@@ -193,6 +197,9 @@ else
     [ -f ~/.zshrc ] && . ~/.zshrc || true
   fi
 fi
+if [ "\$ES6RUN" != "" ]; then 
+  npm install
+fi
 unset ZDOTDIR
 export PATH=\$NAVEPATH:\$PATH
 [ -f ~/.naverc ] && . ~/.naverc || true
@@ -235,7 +242,8 @@ RC
   $cmd "$@"
   local ret=$?
   if [ $ret -eq 0 ]; then
-    exit 0
+    #exit 0
+    echo -n ""
   else
     echo "failed with code=$ret" >&2
     exit $ret
@@ -613,7 +621,7 @@ nave_run () {
   if [ "$exec" == "exec" ]; then
     isLogin=""
     # source the nave env file, then run the command.
-    args=("-c" ". $(enquote_all $NAVE_DIR/.zshenv); $(enquote_all "$@")")
+    args=("-c" ". $(enquote_all $NAVE_DIR/.zshenv); $(enquote_all "$@");")
   elif [ "$shell" == "zsh" ]; then
     isLogin="1"
     # no need to set rcfile, since ZDOTDIR is set.
@@ -642,6 +650,7 @@ nave_run () {
   NAVE_LOGIN="$isLogin" \
   NAVE_DIR="$NAVE_DIR" \
   ZDOTDIR="$NAVE_DIR" \
+  ES6RUN="YES" \
     "$SHELL" "${args[@]}"
 
   exit_code=$?
