@@ -127,7 +127,7 @@ main () {
   # For zsh compatibility, we name this file ".zshenv" instead of
   # the more reasonable "naverc" name.
   # Important! Update this number any time the init content is changed.
-  local rcversion="#3"
+  local rcversion="#ES6PRES"
   local rcfile="$NAVE_DIR/.zshenv"
   if ! [ -f "$rcfile" ] \
       || [ "$(head -n1 "$rcfile")" != "$rcversion" ]; then
