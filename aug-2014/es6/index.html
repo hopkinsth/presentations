@@ -373,65 +373,9 @@ window.onload = function() {
 <div class="center">
   reference-free maps and sets<br>
   <br>
-  that only work with object keys
-</div>
-<div>
-  <span style='color:red;font-size:0.7em'>TypeError: Invalid value used as weak map key</span>
-  <code>
-  <pre>
-  'use strict';
-  let m = new WeakMap();
-  m.set('name', 'Bob');</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-1.js</p>
-</div>
-<div>
-  <code><pre>
-  'use strict';
-  let projects = new WeakMap();
-  let person = {
-    name: 'Thomas',
-    eMail: 'thopkins@site.com'
-  };
-  let theProject = {
-    name: 'Tagular',
-    location: 'our hearts and minds'
-  };
-
-  //ok:
-  projects.set(person, theProject);</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-2.js</p>
-</div>
-<div class="center">
-  when the key in a weak map disappears<br><br>
-  so do the values
-</div>
-<div>
-  <code style="width:400px;"><pre style="word-wrap: break-word">
-  'use strict';
-  let projects = new WeakMap();
-  let person = {
-    name: 'Thomas',
-    eMail: 'thopkins@site.com'
-  };
-
-  let theProject = {
-    name: 'Tagular',
-    location: 'our hearts and minds'
-  };
-
-  projects.set(person, theProject);
-  theProject = null;
-
-  //???
-  console.log(projects.get(person));
-  person = {
-    name: 'Someone Else'
-  };
-
-  console.log(projects.get(person));</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-3.js</p>
-</div>
-<div class="center">
-  it's impossible to know everything <br><br>
-  in a WeakMap or WeakSet <br><br>
-  but they're useful
+  that only work with object keys<br>
+  <br>
+  please explore these on your own
 </div>
 <div>
   modules?
@@ -500,7 +444,7 @@ window.onload = function() {
     //generators are closely releated to iterators
     for (let num of range(5)) {
       console.log(num);
-    }</pre></code>
+    }</pre></code><p class="sample-file" style="font-size:24px">generators-2a.js</p>
 </div>
 <div>
   generators can receive data
@@ -543,7 +487,16 @@ window.onload = function() {
   and it supports promises and all sorts of cool stuff
 </div>
 <div>
-  before...
+  quick refresher<br>
+  common node pattern:<br>
+  callbacks that look like...<br>
+  <code><pre>
+  function (err, res) {
+    // do stuff!
+  }</pre></code>
+</div>
+<div>
+  async in node:
   <code><pre>
   var fs = require('fs');
   fs.readFile('package.json', function (err, buf) {
@@ -587,7 +540,7 @@ window.onload = function() {
   });</pre></code><p class="sample-file" style="font-size:24px">generators-4.js</p>
 </div>
 <div>
-  after...
+  you can be more succinct with `co`
   <code><pre>
   'use strict';
   let co = require('co');
@@ -598,6 +551,39 @@ window.onload = function() {
     let data = yield read('package.json');
     console.log('the data:', data);
   })();</pre></code><p class="sample-file" style="font-size:24px">generators-5.js</p>
+</div>
+<div>
+  more pseudo-code:<br>
+  `co` relies on 'thunks'
+  <code><pre>
+    get('http://google.com', 
+      function (err, data) {
+        //hey.
+      }
+    );
+  </pre></code>
+</div>
+<div>
+  getGoogle is a 'thunk':<br>
+  a function that takes a function (err, res) {}
+  <code><pre>
+  getGoogle(done);
+
+  function getGoogle(done) {
+    get('http://google.com', done);
+  }
+  </pre></code>
+</div>
+<div>
+  thunkify helps with all these sorts of 
+  functions
+  <br>
+  <code><pre>
+  'use strict';
+  let thunkify = require('thunkify');
+  let fs = require('fs');
+  fs.readFile = thunkify(fs.readFile);
+  </pre></code>
 </div>
 <div>
   multiple actions
@@ -672,13 +658,7 @@ window.onload = function() {
   </pre></code><p class="sample-file" style="font-size:24px">generators-8.js</p>
 </div>
 <div>
-  links
-  <ul>
-    <li>put</li>
-    <li>important</li>
-    <li>links</li>
-    <li>here</li>
-  </ul>
+  links coming soon
 </div>
 </body>
 </html>
