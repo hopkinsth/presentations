@@ -102,6 +102,7 @@ es6 () {
     "block-scope-2.js"
     "generators-1.js"
     "generators-2.js"
+    "generators-2a.js"
     "generators-3.js"
     "generators-4.js"
     "generators-5.js"
