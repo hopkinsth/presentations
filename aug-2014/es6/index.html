@@ -233,26 +233,6 @@ window.onload = function() {
   ...for now
 </div>
 <div>
-  symbols
-</div>
-<div>
-  symbols help with name collisions<br>
-  and storing metadata in an object<br>
-  <code class="language-js"><pre>
-  'use strict';
-  let one = Symbol('name');
-  let two = Symbol('name');
-  let obj = {};
-  let swappy = Symbol();
-  
-  obj[one] = 'Bob';
-  obj[two] = 'Joe';
-  obj[swappy] = 1;
-
-  console.log(obj[one]);
-  console.log(obj[two]);</pre></code><p class="sample-file" style="font-size:24px">symbols-1.js</p>
-</div>
-<div>
   private symbols might appear<br><br>
 
   v8 uses symbols internally <br>(e.g. @@create)<br><br>
@@ -411,9 +391,13 @@ window.onload = function() {
     name: 'Thomas',
     eMail: 'thopkins@site.com'
   };
+  let theProject = {
+    name: 'Tagular',
+    location: 'our hearts and minds'
+  };
 
   //ok:
-  projects.set(person, 'Tagular');</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-2.js</p>
+  projects.set(person, theProject);</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-2.js</p>
 </div>
 <div class="center">
   when the key in a weak map disappears<br><br>
@@ -428,11 +412,21 @@ window.onload = function() {
     eMail: 'thopkins@site.com'
   };
 
-  projects.set(person, 'Tagular');
-  person = null;
+  let theProject = {
+    name: 'Tagular',
+    location: 'our hearts and minds'
+  };
+
+  projects.set(person, theProject);
+  theProject = null;
 
   //???
-  projects.get(person);</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-3.js</p>
+  console.log(projects.get(person));
+  person = {
+    name: 'Someone Else'
+  };
+
+  console.log(projects.get(person));</pre></code><p class="sample-file" style="font-size:24px">weak-maps-sets-3.js</p>
 </div>
 <div class="center">
   it's impossible to know everything <br><br>
@@ -447,8 +441,6 @@ window.onload = function() {
 </div>
 <div class="center">
   generators
-  and<br>
-  iterators
 </div>
 <div>
   new flow control patterns!<br><br>
