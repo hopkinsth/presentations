@@ -1,7 +1,7 @@
 var name = 'Thomas';
 var i;
 
-for (i = 0; i &lt; 10; i += 1) {
+for (i = 0; i < 10; i += 1) {
   var i = 99;
   var name = 'Bob';
   var age = i;
